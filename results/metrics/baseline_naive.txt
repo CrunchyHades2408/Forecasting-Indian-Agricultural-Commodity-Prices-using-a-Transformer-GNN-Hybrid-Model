@@ -1,0 +1,4 @@
+Naive Baseline (Persistence Model)
+Metrics computed in real price units
+MAE: 21.15
+RMSE: 111.31
