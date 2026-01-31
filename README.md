@@ -1,162 +1,221 @@
-🌾 Multimodal Residual Learning for Agricultural Commodity Price Forecasting
+Multimodal Residual Learning for Agricultural Commodity Price Forecasting
+Overview
 
-A research-oriented machine learning project that predicts agricultural commodity prices by modeling price residuals over a persistence baseline, using temporal, spatial, weather, and sentiment signals.
+This repository contains a research-oriented machine learning project focused on forecasting agricultural commodity prices by modeling residual price movements over a persistence baseline.
+The project integrates temporal modeling, spatial graph learning, weather data, and market sentiment to study how external and structural factors influence price dynamics.
 
-This project integrates Transformer-based time-series modeling with Graph Neural Networks (GNNs) to capture both temporal dynamics and market-level spatial dependencies.
+Instead of directly predicting absolute prices, the system reframes the task as residual learning, which significantly improves model stability and interpretability in the presence of strong price persistence.
 
-📌 Project Overview
+Problem Statement
 
 Agricultural commodity prices exhibit:
 
 Strong temporal persistence
 
-High volatility due to external factors
+Sudden shocks due to weather, sentiment, and policy changes
 
-Spatial dependencies across markets and states
+Spatial dependencies across markets and regions
 
-Rather than directly predicting absolute prices, this project reframes the task as residual learning, allowing the model to focus on deviations from price persistence, which is the true source of forecasting difficulty.
+Traditional regression-based or direct deep learning approaches struggle because the model is dominated by price persistence.
 
-🎯 Problem Statement
+Objective:
+Predict short-term commodity price movements by learning price residuals over a naive persistence baseline using multimodal data.
 
-Predict short-term agricultural commodity price movements by learning residual price changes over a naive persistence baseline, using historical prices, weather data, market sentiment, and spatial market relationships.
+Key Contribution
 
-🧠 Key Idea (Core Insight)
+The central contribution of this project is the reformulation of commodity price forecasting as a residual prediction problem:
 
-Instead of predicting:
-
-Price(t)
-
-
-the model predicts:
-
-Residual(t) = Price(t) − Price(t−1)
-
-
-and reconstructs:
-
-Pricê(t) = Price(t−1) + Residual̂(t)
-
+𝑅
+𝑒
+𝑠
+𝑖
+𝑑
+𝑢
+𝑎
+𝑙
+(
+𝑡
+)
+=
+𝑃
+𝑟
+𝑖
+𝑐
+𝑒
+(
+𝑡
+)
+−
+𝑃
+𝑟
+𝑖
+𝑐
+𝑒
+(
+𝑡
+−
+1
+)
+Residual(t)=Price(t)−Price(t−1)
+𝑃
+𝑟
+𝑖
+𝑐
+𝑒
+^
+(
+𝑡
+)
+=
+𝑃
+𝑟
+𝑖
+𝑐
+𝑒
+(
+𝑡
+−
+1
+)
++
+𝑅
+𝑒
+𝑠
+𝑖
+𝑑
+𝑢
+𝑎
+𝑙
+^
+(
+𝑡
+)
+Price
+^
+(t)=Price(t−1)+
+Residual
+^
+(t)
 
 This formulation:
 
-Neutralizes dominance of persistence
+Neutralizes persistence dominance
 
 Enables fair comparison with naive baselines
 
-Improves stability and interpretability
+Improves learning stability
 
-Is standard in financial & commodity forecasting research
+Aligns with best practices in financial and economic forecasting research
 
-🧱 System Architecture
+System Architecture
 Historical Prices ─┐
 Weather Features ──┼──▶ Transformer Encoder ─┐
 Sentiment Scores ──┘                          │
-                                               ├──▶ Fusion Layer ─▶ Residual Prediction
-Market Graph ─▶ GNN Encoder ───────────────────┘
+                                               ├──▶ Fusion Network ─▶ Residual Prediction
+Market Graph ─▶ Graph Neural Network ──────────┘
 
-🛠️ Tech Stack
-Programming & ML
+Tech Stack
+Core Libraries
 
 Python 3.12
 
 PyTorch
 
-PyTorch Geometric (GNN)
+PyTorch Geometric
 
-NumPy, Pandas
+NumPy
+
+Pandas
 
 scikit-learn
 
-Data & Utilities
+Supporting Tools
 
-RSS news scraping (sentiment)
+joblib (scaler persistence)
 
-joblib (scalers)
+RSS-based news scraping (sentiment)
 
-CSV-based modular pipelines
+CSV-based data pipelines
 
-Development
+VS Code (development)
 
-VS Code
-
-Script-based, reproducible pipeline
-
-Research-friendly project structure
-
-📂 Project Structure
+Project Structure
 Minor/
 │
 ├── data/
-│   ├── raw/
+│   ├── raw/                  # Original datasets
 │   │   ├── prices/
 │   │   ├── weather/
 │   │   └── sentiment/
-│   ├── processed/
+│   │
+│   ├── processed/            # Cleaned & engineered data
 │   │   ├── graph/
 │   │   ├── scalers/
 │   │   ├── sequences/
 │   │   ├── splits/
-│   │   └── final_scaled_dataset.csv
+│   │   ├── prices_cleaned.csv
+│   │   ├── final_scaled_dataset.csv
+│   │   └── final_merged_dataset.csv
 │
 ├── src/
-│   ├── data_handling/
-│   ├── pipeline/
-│   ├── models/
-│   └── training/
+│   ├── data_handling/        # Cleaning & preprocessing scripts
+│   ├── pipeline/             # Feature engineering & sequence creation
+│   ├── models/               # Transformer, GNN, fusion model
+│   └── training/             # Training, baselines, evaluation
 │
 ├── results/
-│   ├── models/
-│   └── metrics/
+│   ├── models/               # Saved trained models
+│   └── metrics/              # Evaluation outputs
 │
 ├── reports/
 │   └── Minor Project PPT.pptx
 │
 └── README.md
 
-📊 Data Sources
-Data Type	Description
-Commodity Prices	Market-level daily modal prices
-Weather	State-level average temperature & rainfall
-Sentiment	News headlines related to commodities
-Graph	Market connectivity graph
-🔬 Experiments & Methodology
-Baseline Models
+Dataset Description
+Data Sources
 
-Naive Persistence: Price(t−1)
+Commodity Prices: Market-level daily modal prices
 
-Transformer-only
+Weather: State-level average temperature and rainfall
 
-GNN-only
+Sentiment: Commodity-related news headlines
 
-Transformer–GNN Fusion (Proposed)
+Graph Data: Market-to-market connectivity
 
-Experiment Progression
-Stage	Description	MAE	RMSE
-Naive Baseline	Persistence	~21	~111
-Tier-1	Absolute price prediction	~378	~448
-Tier-2	Lagged price as input	~333	~371
-✅ Tier-3 (Final)	Residual learning + MSE	44.23	115.97
-📈 Final Results (Locked)
-MAE  = 44.23
-RMSE = 115.97
+Coverage
 
-Interpretation
+Commodities: Rice, Wheat, Maize
 
-Massive improvement over absolute price prediction
+Geography: Multiple Indian states and markets
 
-Approaches naive baseline accuracy
+Frequency: Daily
 
-Gains explanatory power by using:
+Duration: ~1 year
 
-Weather
+Feature Engineering
 
-Sentiment
+Lagged price (Price(t−1))
 
-Spatial market structure
+Weather aggregates (temperature, rainfall)
 
-This trade-off is expected and desirable in research.
+Sentiment score (news-based)
 
-🧪 Training Details
+Market graph embeddings (GNN)
+
+All features are scaled using MinMaxScaler, with scalers persisted for correct inverse transformation during evaluation.
+
+Models Used
+
+Transformer Encoder – captures temporal dependencies
+
+Graph Neural Network (GCN) – models spatial market relationships
+
+Fusion Network – combines temporal and spatial embeddings
+
+Regression Head – predicts residual price change
+
+Training Details
 
 Loss Function: Mean Squared Error (MSE)
 
@@ -166,30 +225,45 @@ Early Stopping: Validation-based
 
 Sequence Length: 14 days
 
-Target: Residual price (scaled)
+Target Variable: Residual price (scaled)
 
-🔍 Evaluation Strategy
+Experiments & Results
+Baselines
+Model	MAE	RMSE
+Naive Persistence	~21	~111
+Model Progression
+Stage	Description	MAE	RMSE
+Tier-1	Absolute price prediction	~378	~448
+Tier-2	Lagged price as input	~333	~371
+Tier-3 (Final)	Residual learning + MSE	44.23	115.97
+Final Results
+MAE  = 44.23
+RMSE = 115.97
 
-Residual predictions reconstructed into prices:
 
-Pricê(t) = Price(t−1) + Residual̂(t)
+The final model approaches naive persistence performance while incorporating external and spatial explanatory signals, which is considered a strong and realistic outcome in economic forecasting research.
 
+Evaluation Methodology
+
+Residual predictions reconstructed into absolute prices
 
 Correct inverse scaling using saved scalers
 
 Metrics computed in real price units
 
-⚠️ Limitations
+Evaluation strictly separated from training data
 
-Limited historical duration (~1 year)
+Limitations
 
-No intraday price data
+Limited historical time span
 
-Sentiment coverage limited to news headlines
+No intraday price information
 
-Policy effects not fully integrated
+Sentiment derived only from news headlines
 
-🚀 Future Work
+Policy impact modeling not fully integrated
+
+Future Work
 
 Robust loss functions (Huber loss)
 
@@ -199,10 +273,11 @@ Commodity-specific models
 
 Dynamic graph learning
 
-Policy impact modeling
+Policy and macroeconomic feature integration
 
 Batch inference deployment
 
-🏁 Final Takeaway
+Conclusion
 
-This project demonstrates that reframing commodity price forecasting as a residual learning problem is essential for overcoming persistence dominance and achieving meaningful predictive performance.
+This project demonstrates that residual learning is essential for meaningful commodity price forecasting under strong temporal persistence.
+The proposed multimodal framework provides a principled and extensible foundation for future research in agricultural price modeling.
