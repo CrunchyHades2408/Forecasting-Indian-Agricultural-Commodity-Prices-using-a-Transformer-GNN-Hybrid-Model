@@ -6,7 +6,11 @@ Instead of predicting absolute prices, the model learns deviations from previous
 
 Key Features
 Residual learning over naive persistence baseline
+
 Transformer-based temporal modeling
+
 Graph Neural Network (GNN) for market relationships
+
 Integration of weather and sentiment signals
+
 Research-focused, reproducible pipeline
