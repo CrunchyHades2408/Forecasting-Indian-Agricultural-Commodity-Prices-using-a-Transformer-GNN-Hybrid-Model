@@ -1,16 +1,45 @@
-Multimodal Residual Learning for Agricultural Commodity Price Forecasting
-
-This project is a research-based machine learning system for forecasting agricultural commodity prices by modeling price residuals over a persistence baseline.
-It combines temporal modeling, spatial graph learning, weather data, and market sentiment to study factors influencing price movements.
-Instead of predicting absolute prices, the model learns deviations from previous prices, which improves stability and interpretability under strong price persistence.
-
-Key Features
--Residual learning over naive persistence baseline
-
--Transformer-based temporal modeling
-
--Graph Neural Network (GNN) for market relationships
-
--Integration of weather and sentiment signals
-
--Research-focused, reproducible pipeline
+Review
+# 🌾 Agricultural Commodity Price Forecasting
+### A Hybrid Transformer + GNN Deep Learning System for Indian Agri-Markets
+---
+## 📌 Overview
+This project forecasts agricultural commodity prices (Rice, Wheat, Maize) across Indian state-level markets by fusing **temporal patterns** with **spatial market relationships**. It combines:
+- **Transformer Encoder** — captures 14-day temporal sequences of weather and market sentiment
+- **Graph Neural Network (GNN) Encoder** — models spatial relationships between markets within the same state
+- **Fusion Model** — concatenates both representations and regresses the next-day modal price
+The model was developed as a Minor Project and is accompanied by a full IEEE-format paper, architecture document, and functional specification.
+---
+## 🏗️ Architecture
+```
+Raw Data Sources
+    ├── Commodity Prices (Agmarknet / WRIS CSVs)
+    ├── State-level Weather (temperature, rainfall)
+    ├── Sentiment (Google News RSS — 12 keyword feeds)
+    └── Policy Events (GDELT API — MSP / export ban news)
+          │
+          ▼
+    Data Cleaning & Merging
+          │
+          ▼
+    Feature Scaling (StandardScaler)
+          │
+          ▼
+    ┌──────────────────────┐   ┌─────────────────────────┐
+    │  Temporal Sequences  │   │    Market Graph           │
+    │  (14-day lookback)   │   │  (adjacency by state)     │
+    │  [Temp, Rain, Sent]  │   │  node feat = avg price    │
+    └────────┬─────────────┘   └───────────┬──────────────┘
+             │                             │
+             ▼                             ▼
+    TransformerEncoder (d=64)     GNNEncoder (2-layer, h=64)
+             │                             │
+             └──────────── cat ────────────┘
+                               │
+                         Regressor MLP
+                       (128 → 64 → 1)
+                               │
+                    Predicted Modal Price
+```
+---
+## 📁 Project Structure
+```
